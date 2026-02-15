@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: smart-airport-api
+    env_file:
+      - backend/.env.example
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./backend:/app/backend
+
+  db:
+    image: postgres:16
+    container_name: smart-airport-db
+    environment:
+      POSTGRES_DB: ride_pooling
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: smart-airport-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
